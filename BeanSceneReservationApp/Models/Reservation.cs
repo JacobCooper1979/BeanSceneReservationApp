@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeanSceneReservationApp.Models
@@ -15,6 +16,9 @@ namespace BeanSceneReservationApp.Models
         public int NumOfGuests { get; set; }
         public string ReservationSource { get; set; } = null!;
         public string? Notes { get; set; }
+
+        [Required]
+        [Display(Name = "Reservation Status")]
         public string ReservationStatus { get; set; } = null!;
 
         public int? TableId { get; set; }
