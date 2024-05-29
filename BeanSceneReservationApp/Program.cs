@@ -1,6 +1,7 @@
 using BeanSceneReservationApp.Models;
 using BeanSceneReservationApp.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.AddControllersWithViews();
 // Register the Database context
 builder.Services.AddDbContext<BeanSeanReservationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<BeanSeanReservationDbContext>();
+
 
 
 // Register the area service
@@ -36,8 +41,18 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapRazorPages();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+
+
+
+ // Add this using directive at the beginning of the file
+
+
 
 app.Run();
