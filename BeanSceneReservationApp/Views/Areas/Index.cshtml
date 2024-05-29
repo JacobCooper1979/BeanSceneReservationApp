@@ -19,6 +19,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Capacity)
             </th>
+            <th>
+                Image
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -31,6 +34,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Capacity)
             </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@Url.Content(item.Image)" alt="Area Image" style="max-width: 100px; max-height: 100px;" />
+                    }
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AreaId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.AreaId">Details</a> |

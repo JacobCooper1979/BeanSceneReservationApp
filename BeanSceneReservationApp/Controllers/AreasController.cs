@@ -54,16 +54,40 @@ namespace BeanSceneReservationApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AreaId,AreaName,Capacity")] Area area)
+        public async Task<IActionResult> Create([Bind("AreaId,AreaName,Capacity,ImageFile")] Area area)
         {
             if (ModelState.IsValid)
             {
+                if (area.ImageFile != null && area.ImageFile.Length > 0)
+                {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\UploadImage");
+
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    // Generate a unique filename to avoid overwriting existing files
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(area.ImageFile.FileName);
+                    var fileWithPath = Path.Combine(path, uniqueFileName);
+
+                    // Save the file
+                    using (var stream = new FileStream(fileWithPath, FileMode.Create))
+                    {
+                        await area.ImageFile.CopyToAsync(stream);
+                    }
+
+                    // Set the image path in the area object
+                    area.Image = uniqueFileName;
+                }
+
                 _context.Add(area);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(area);
         }
+
 
         // GET: Areas/Edit/5
         public async Task<IActionResult> Edit(int? id)
