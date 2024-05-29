@@ -194,7 +194,7 @@ namespace BeanSceneReservationApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Ensure the base class configurations are called
+            base.OnModelCreating(modelBuilder); 
 
             modelBuilder.Entity<Area>(entity =>
             {
@@ -336,12 +336,5 @@ namespace BeanSceneReservationApp.Models
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 
-    /*public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser> 
-    {
-        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
-        {
-            builder.Property(u => u.FirstName).HasMaxLength(55);
-            builder.Property(u => u.LastName).HasMaxLength(55);
-        }
-    }*/
+    
 }
