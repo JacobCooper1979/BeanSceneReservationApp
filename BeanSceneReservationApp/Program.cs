@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
