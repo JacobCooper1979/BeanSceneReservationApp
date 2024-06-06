@@ -155,12 +155,11 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
-                //-------------------------------------
                 var user = CreateUser();
 
                 user.FirstName = Input.FirstName;
@@ -170,10 +169,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
-                user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
-                user.DateOfBirth = Input.DateOfBirth;
 
                 if (result.Succeeded)
                 {
@@ -187,6 +182,8 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+
+                    await _userManager.AddToRoleAsync(user, "Member"); // Assigning "Member" role by default
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -209,6 +206,7 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 
             return Page();
         }
+
 
         private ApplicationUser CreateUser()
         {
