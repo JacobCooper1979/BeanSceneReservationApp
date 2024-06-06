@@ -113,6 +113,9 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }*/
 
+
+
+            //---------------------------------------------------------
             [Required]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
@@ -157,7 +160,9 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                //-------------------------------------
                 var user = CreateUser();
+
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
@@ -202,7 +207,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

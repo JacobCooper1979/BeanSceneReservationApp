@@ -26,6 +26,8 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Book a Reservation</a>
                         </li>
+
+
                         <!-- Area link (visible to Manager and Staff only) -->
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
                         {
@@ -46,8 +48,11 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
                             </li>
+
                         }
                     </ul>
+
+
                     <form class="d-flex">
                         <input class="form-control me-sm-2" type="search" placeholder="Search" spellcheck="false" data-ms-editor="true">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>

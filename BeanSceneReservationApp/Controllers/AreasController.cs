@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeanSceneReservationApp.Controllers
 {
@@ -49,6 +50,7 @@ namespace BeanSceneReservationApp.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         // POST: Areas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

@@ -37,7 +37,8 @@
                 <td>
                     @if (!string.IsNullOrEmpty(item.Image))
                     {
-                        <img src="@Url.Content(item.Image)" alt="Area Image" style="max-width: 100px; max-height: 100px;" />
+                        @* <img src="@Url.Content(item.Image)" alt="Area Image" style="max-width: 100px; max-height: 100px;" /> *@
+                        <img style="height:80px;width:80px" src="../UploadImage/@item.Image" />
                     }
                 </td>
             <td>
