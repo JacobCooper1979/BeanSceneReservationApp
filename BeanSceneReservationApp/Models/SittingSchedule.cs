@@ -1,21 +1,24 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BeanSceneReservationApp.Models;
-
-public partial class SittingSchedule
+namespace BeanSceneReservationApp.Models
 {
-    public int SittingId { get; set; }
+    public partial class SittingSchedule
+    {
+        public int SittingId { get; set; }
+        
+        public int AreaId { get; set; }
 
-    public string Stype { get; set; } = null!;
+        // Navigation property for Area
+        public virtual Area Area { get; set; } // Assuming a Sitting is associated with one Area
 
-    public DateTime StartDateTime { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    }
 
-    public DateTime EndDateTime { get; set; }
+    
 
-    public int Scapacity { get; set; }
-
-    public string? Status { get; set; }
-
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }
+
+
+*/

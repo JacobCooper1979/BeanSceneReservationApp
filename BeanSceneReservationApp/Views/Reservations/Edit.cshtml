@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="ReservationId" />
             <div class="form-group">
                 <label asp-for="SittingId" class="control-label"></label>
-                <select asp-for="SittingId" class="form-control" asp-items="ViewBag.SittingId"></select>
+                <input asp-for="SittingId" class="form-control" />
                 <span asp-validation-for="SittingId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,11 +40,6 @@
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="NumOfGuests" class="control-label"></label>
                 <input asp-for="NumOfGuests" class="form-control" />
                 <span asp-validation-for="NumOfGuests" class="text-danger"></span>
@@ -60,19 +55,29 @@
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="OrderSource" class="control-label"></label>
+                <select asp-for="OrderSource" class="form-control"></select>
+                <span asp-validation-for="OrderSource" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ReservationStatus" class="control-label"></label>
-                <input asp-for="ReservationStatus" class="form-control" />
+                <select asp-for="ReservationStatus" class="form-control"></select>
                 <span asp-validation-for="ReservationStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SittingTime" class="control-label"></label>
+                <select asp-for="SittingTime" class="form-control"></select>
+                <span asp-validation-for="SittingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreaName" class="control-label"></label>
+                <select asp-for="AreaName" class="form-control"></select>
+                <span asp-validation-for="AreaName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TableId" class="control-label"></label>
                 <select asp-for="TableId" class="form-control" asp-items="ViewBag.TableId"></select>
                 <span asp-validation-for="TableId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MemberId" class="control-label"></label>
-                <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId"></select>
-                <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

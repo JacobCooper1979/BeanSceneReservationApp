@@ -19,5 +19,5 @@ public partial class Member
 
     public DateOnly RegistrationDate { get; set; }
 
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    
 }

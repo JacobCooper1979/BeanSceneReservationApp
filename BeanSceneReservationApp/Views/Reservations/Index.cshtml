@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.SittingId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.GuestName)
             </th>
             <th>
@@ -26,9 +29,6 @@
                 @Html.DisplayNameFor(model => model.StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.NumOfGuests)
             </th>
             <th>
@@ -38,16 +38,19 @@
                 @Html.DisplayNameFor(model => model.Notes)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.OrderSource)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ReservationStatus)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.SittingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AreaName)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Table)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Member)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sitting)
             </th>
             <th></th>
         </tr>
@@ -55,6 +58,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SittingId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GuestName)
             </td>
@@ -68,9 +74,6 @@
                 @Html.DisplayFor(modelItem => item.StartTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.NumOfGuests)
             </td>
             <td>
@@ -80,16 +83,19 @@
                 @Html.DisplayFor(modelItem => item.Notes)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.OrderSource)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.ReservationStatus)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Table.TableId)
+                @Html.DisplayFor(modelItem => item.SittingTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Member.MemberId)
+                @Html.DisplayFor(modelItem => item.AreaName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Sitting.SittingId)
+                @Html.DisplayFor(modelItem => item.Table.TableName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ReservationId">Edit</a> |

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace BeanSceneReservationApp.Models
 {
@@ -17,11 +17,17 @@ namespace BeanSceneReservationApp.Models
         [ForeignKey("Area")]
         public int AreaId { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string TableStatus { get; set; } = null!;
+        public TableStatus TableStatus { get; set; }
+        public AreaName AreaName { get; set; }
 
-        public virtual Area Area { get; set; } = null!;
+        public Area? Area { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    }
+
+    public enum TableStatus
+    {
+        Pending = 0,
+        Cancelled = 1,
+        Available = 2,
     }
 }
