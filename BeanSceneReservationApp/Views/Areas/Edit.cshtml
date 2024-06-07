@@ -16,7 +16,12 @@
             <input type="hidden" asp-for="AreaId" />
             <div class="form-group">
                 <label asp-for="AreaName" class="control-label"></label>
-                <input asp-for="AreaName" class="form-control" />
+                <select asp-for="AreaName" class="form-control">
+                    @foreach (var item in Enum.GetValues(typeof(BeanSceneReservationApp.Models.AreaName)))
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
                 <span asp-validation-for="AreaName" class="text-danger"></span>
             </div>
             <div class="form-group">

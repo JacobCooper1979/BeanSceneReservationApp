@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeanSceneReservationApp.Migrations
 {
     [DbContext(typeof(BeanSeanReservationDbContext))]
-    [Migration("20240529102144_3")]
-    partial class _3
+    [Migration("20240607014959_second")]
+    partial class second
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,22 +105,21 @@ namespace BeanSceneReservationApp.Migrations
                 {
                     b.Property<int>("AreaId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("AreaID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AreaId"));
 
-                    b.Property<string>("AreaName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("AreaName")
+                        .HasMaxLength(255)
+                        .HasColumnType("int");
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.HasKey("AreaId")
-                        .HasName("PK__Areas__70B82028021F9B83");
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AreaId");
 
                     b.ToTable("Areas");
                 });
@@ -129,45 +128,38 @@ namespace BeanSceneReservationApp.Migrations
                 {
                     b.Property<int>("MemberId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("MemberID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateOnly>("RegistrationDate")
                         .HasColumnType("date");
 
-                    b.HasKey("MemberId")
-                        .HasName("PK__Members__0CF04B385D3E9B78");
+                    b.HasKey("MemberId");
 
                     b.ToTable("Members");
                 });
@@ -176,70 +168,51 @@ namespace BeanSceneReservationApp.Migrations
                 {
                     b.Property<int>("ReservationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ReservationID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"));
 
-                    b.Property<int>("Duration")
+                    b.Property<int>("AreaName")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("GuestName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("MemberId")
-                        .HasColumnType("int")
-                        .HasColumnName("MemberID");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Notes")
+                        .HasMaxLength(500)
                         .HasColumnType("text");
 
                     b.Property<int>("NumOfGuests")
                         .HasColumnType("int");
 
+                    b.Property<int>("OrderSource")
+                        .HasColumnType("int");
+
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("ReservationSource")
-                        .IsRequired()
+                    b.Property<int>("ReservationStatus")
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("int");
 
-                    b.Property<string>("ReservationStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("SittingId")
-                        .HasColumnType("int")
-                        .HasColumnName("SittingID");
+                    b.Property<int>("SittingTime")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("TableId")
-                        .HasColumnType("int")
-                        .HasColumnName("TableID");
+                        .HasColumnType("int");
 
-                    b.HasKey("ReservationId")
-                        .HasName("PK__Reservat__B7EE5F048FA4C04B");
-
-                    b.HasIndex("MemberId");
-
-                    b.HasIndex("SittingId");
+                    b.HasKey("ReservationId");
 
                     b.HasIndex("TableId");
 
@@ -250,120 +223,70 @@ namespace BeanSceneReservationApp.Migrations
                 {
                     b.Property<int>("TableId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("TableID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TableId"));
 
                     b.Property<int>("AreaId")
-                        .HasColumnType("int")
-                        .HasColumnName("AreaID");
+                        .HasColumnType("int");
 
-                    b.Property<string>("AreaName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AreaName")
+                        .HasColumnType("int");
 
                     b.Property<string>("TableName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("TableStatus")
+                    b.Property<int>("TableStatus")
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("int");
 
-                    b.HasKey("TableId")
-                        .HasName("PK__Restaura__7D5F018EB4DAC4D3");
+                    b.HasKey("TableId");
 
                     b.HasIndex("AreaId");
 
                     b.ToTable("RestaurantTables");
                 });
 
-            modelBuilder.Entity("BeanSceneReservationApp.Models.SittingSchedule", b =>
-                {
-                    b.Property<int>("SittingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("SittingID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SittingId"));
-
-                    b.Property<DateTime>("EndDateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("Scapacity")
-                        .HasColumnType("int")
-                        .HasColumnName("SCapacity");
-
-                    b.Property<DateTime>("StartDateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Status")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Stype")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("SType");
-
-                    b.HasKey("SittingId")
-                        .HasName("PK__SittingS__42A14C30276D7D03");
-
-                    b.ToTable("SittingSchedules");
-                });
-
             modelBuilder.Entity("BeanSceneReservationApp.Models.Staff", b =>
                 {
                     b.Property<int>("StaffId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("StaffID");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("StaffType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("StaffId")
-                        .HasName("PK__Staffs__96D4AAF742C351A4");
+                    b.HasKey("StaffId");
 
                     b.ToTable("Staffs");
                 });
@@ -507,24 +430,9 @@ namespace BeanSceneReservationApp.Migrations
 
             modelBuilder.Entity("BeanSceneReservationApp.Models.Reservation", b =>
                 {
-                    b.HasOne("BeanSceneReservationApp.Models.Member", "Member")
-                        .WithMany("Reservations")
-                        .HasForeignKey("MemberId")
-                        .HasConstraintName("FK__Reservati__Membe__44FF419A");
-
-                    b.HasOne("BeanSceneReservationApp.Models.SittingSchedule", "Sitting")
-                        .WithMany("Reservations")
-                        .HasForeignKey("SittingId")
-                        .HasConstraintName("FK__Reservati__Sitti__4316F928");
-
                     b.HasOne("BeanSceneReservationApp.Models.RestaurantTable", "Table")
                         .WithMany("Reservations")
-                        .HasForeignKey("TableId")
-                        .HasConstraintName("FK__Reservati__Table__440B1D61");
-
-                    b.Navigation("Member");
-
-                    b.Navigation("Sitting");
+                        .HasForeignKey("TableId");
 
                     b.Navigation("Table");
                 });
@@ -534,8 +442,8 @@ namespace BeanSceneReservationApp.Migrations
                     b.HasOne("BeanSceneReservationApp.Models.Area", "Area")
                         .WithMany("RestaurantTables")
                         .HasForeignKey("AreaId")
-                        .IsRequired()
-                        .HasConstraintName("FK__Restauran__AreaI__398D8EEE");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Area");
                 });
@@ -596,17 +504,7 @@ namespace BeanSceneReservationApp.Migrations
                     b.Navigation("RestaurantTables");
                 });
 
-            modelBuilder.Entity("BeanSceneReservationApp.Models.Member", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
             modelBuilder.Entity("BeanSceneReservationApp.Models.RestaurantTable", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("BeanSceneReservationApp.Models.SittingSchedule", b =>
                 {
                     b.Navigation("Reservations");
                 });

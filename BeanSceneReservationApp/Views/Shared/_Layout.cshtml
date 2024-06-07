@@ -24,9 +24,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Book a Reservation</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Create">Book a Reservation</a>
                         </li>
-
+                        <!-- Area link (visible to Manager and Staff only) -->
+                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Manage Reservation</a>
+                            </li>
+                        }
 
                         <!-- Area link (visible to Manager and Staff only) -->
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
