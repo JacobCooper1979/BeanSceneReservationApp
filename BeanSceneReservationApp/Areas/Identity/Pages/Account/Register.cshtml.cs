@@ -71,51 +71,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /*[Required]
-            [EmailAddress]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Date of birth")]
-            public string DateOfBirth { get; set; }
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }*/
-
-
-
-            //---------------------------------------------------------
             [Required]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
@@ -135,6 +90,10 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [Display(Name = "Phone Number")]
+            public int Phone { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -144,6 +103,12 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm Password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Registration Date")]
+            [DataType(DataType.Date)]
+            public DateTime RegistrationDate { get; set; } = DateTime.Now;
+
         }
 
 
@@ -165,6 +130,8 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
+                user.Phone = Input.Phone;
+                user.RegistrationDate = Input.RegistrationDate;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -183,7 +150,8 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _userManager.AddToRoleAsync(user, "Member"); // Assigning "Member" role by default
+                    // Assigning Member role to new users by default
+                    await _userManager.AddToRoleAsync(user, "Member"); 
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

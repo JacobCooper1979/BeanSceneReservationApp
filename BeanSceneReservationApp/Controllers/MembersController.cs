@@ -6,23 +6,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BeanSceneReservationApp.Controllers
 {
     public class MembersController : Controller
     {
         private readonly BeanSeanReservationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MembersController(BeanSeanReservationDbContext context)
+        public MembersController(BeanSeanReservationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Members
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Members.ToListAsync());
+            // Get the user IDs of users in the "Member" role
+            var memberUserIds = (await _userManager.GetUsersInRoleAsync("Member")).Select(u => u.Id).ToList();
+
+            // Get all members from the database
+            var allMembers = await _context.Members.ToListAsync();
+
+            // Filter members based on user IDs
+            var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
+
+            return View(members);
         }
+
 
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
