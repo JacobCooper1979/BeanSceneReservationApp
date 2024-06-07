@@ -9,7 +9,7 @@ namespace BeanSceneReservationApp.Models
         [Key]
         public int ReservationId { get; set; }
 
-        [Required(ErrorMessage = "Guest Name is required.")]
+        [Required(ErrorMessage = "Guest Name is not required")]
         [StringLength(100, ErrorMessage = "Guest Name cannot be longer than 100 characters please enter a nickname if your name is longer than 100 characters")]
         [Display(Name = "Guest Name")]
         public string? GuestName { get; set; } = null!;
@@ -17,7 +17,7 @@ namespace BeanSceneReservationApp.Models
         [Required(ErrorMessage = "Email Address is required")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         [Display(Name = "Email Address")]
-        public string? Email { get; set; } = null!;
+        public string Email { get; set; } = null!;
 
         [Phone(ErrorMessage = "Invalid Phone Number")]
         [Display(Name = "Phone Number")]
@@ -33,11 +33,9 @@ namespace BeanSceneReservationApp.Models
         public int NumOfGuests { get; set; }
 
         [StringLength(500, ErrorMessage = "Additional Notes cannot be longer than 500 characters")]
-        [Display(Name = "Please enter here if you require any special arrangements such as a high chair or dietary requirments")]
         public string? Notes { get; set; }
 
         [Required(ErrorMessage = "Order Source is required")]
-        [Display(Name = "Please confirm which way the order was booked if your using the website please select Online")]
         public OrderSource OrderSource { get; set; }
 
         [Required(ErrorMessage = "Reservation Status is required")]
@@ -53,7 +51,7 @@ namespace BeanSceneReservationApp.Models
         public AreaName AreaName { get; set; }
 
         [ForeignKey("RestaurantTable")]
-        [Display(Name = "Table Number")]
+        [Display(Name = "Table")]
         public int? TableId { get; set; }
 
         public virtual RestaurantTable? Table { get; set; }

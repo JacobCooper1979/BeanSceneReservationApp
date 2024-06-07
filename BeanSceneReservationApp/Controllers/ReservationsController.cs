@@ -54,19 +54,52 @@ namespace BeanSceneReservationApp.Controllers
         // POST: Reservations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Reservations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReservationId,GuestName,Email,Phone,StartTime,NumOfGuests,Notes,OrderSource,ReservationStatus,SittingTime,AreaName,TableId")] Reservation reservation)
         {
             if (ModelState.IsValid)
             {
+                // Check if the table exists in the database
+                var table = await _context.RestaurantTables.Include(t => t.Area).FirstOrDefaultAsync(t => t.TableId == reservation.TableId);
+                if (table == null)
+                {
+                    return NotFound(); // Table not found
+                }
+
+                // Check if the selected table is in the same area as the customer's selected area
+                if (table.AreaName != reservation.AreaName)
+                {
+                    ModelState.AddModelError("TableId", "The selected table is not in the same area as the customers selected area.");
+                    ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
+                    return View(reservation);
+                }
+
+                // Check if the table is already booked out
+                if (table.TableStatus == TableStatus.BookedOut)
+                {
+                    ModelState.AddModelError("TableId", "The selected table is already booked out.");
+                    ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
+                    return View(reservation);
+                }
+
+                // Setting reservations to pending once they are created
+                reservation.ReservationStatus = ReservationStatus.Pending;
+
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
+
+                // Update the table status to Reserved
+                table.TableStatus = TableStatus.BookedOut;
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
             return View(reservation);
         }
+
 
         // GET: Reservations/Edit/5
         public async Task<IActionResult> Edit(int? id)
