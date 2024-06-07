@@ -112,7 +112,8 @@ namespace BeanSceneReservationApp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TableName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     AreaId = table.Column<int>(type: "int", nullable: false),
-                    TableStatus = table.Column<int>(type: "int", maxLength: 50, nullable: false)
+                    TableStatus = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    AreaName = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,14 +238,12 @@ namespace BeanSceneReservationApp.Migrations
                 {
                     ReservationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SittingId = table.Column<int>(type: "int", nullable: true),
                     GuestName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     StartTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     NumOfGuests = table.Column<int>(type: "int", nullable: false),
-                    ReservationSource = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: true),
+                    Notes = table.Column<string>(type: "text", maxLength: 500, nullable: true),
                     OrderSource = table.Column<int>(type: "int", nullable: false),
                     ReservationStatus = table.Column<int>(type: "int", maxLength: 50, nullable: false),
                     SittingTime = table.Column<int>(type: "int", nullable: false),

@@ -42,7 +42,6 @@ namespace BeanSceneReservationApp.Models
                 entity.Property(e => e.GuestName).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.Email).HasMaxLength(255);
                 entity.Property(e => e.Phone).HasMaxLength(20);
-                entity.Property(e => e.ReservationSource).HasMaxLength(50);
                 entity.Property(e => e.ReservationStatus).HasMaxLength(50);
                 entity.Property(e => e.StartTime).HasColumnType("datetime");
                 entity.Property(e => e.Notes).HasColumnType("text");
@@ -54,8 +53,8 @@ namespace BeanSceneReservationApp.Models
                 entity.HasKey(e => e.TableId);
                 entity.Property(e => e.TableName).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.TableStatus).HasMaxLength(50);
-                entity.Property(e => e.AreaName).IsRequired(); // Remove maximum length and required constraint
-                entity.Property(e => e.AreaName).HasConversion<int>(); // Configure AreaName as an enumeration
+                entity.Property(e => e.AreaName).IsRequired(); 
+                entity.Property(e => e.AreaName).HasConversion<int>(); 
             });
 
 

@@ -56,7 +56,7 @@ namespace BeanSceneReservationApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReservationId,SittingId,GuestName,Email,Phone,StartTime,NumOfGuests,ReservationSource,Notes,OrderSource,ReservationStatus,SittingTime,AreaName,TableId")] Reservation reservation)
+        public async Task<IActionResult> Create([Bind("ReservationId,GuestName,Email,Phone,StartTime,NumOfGuests,Notes,OrderSource,ReservationStatus,SittingTime,AreaName,TableId")] Reservation reservation)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace BeanSceneReservationApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReservationId,SittingId,GuestName,Email,Phone,StartTime,NumOfGuests,ReservationSource,Notes,OrderSource,ReservationStatus,SittingTime,AreaName,TableId")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, [Bind("ReservationId,GuestName,Email,Phone,StartTime,NumOfGuests,Notes,OrderSource,ReservationStatus,SittingTime,AreaName,TableId")] Reservation reservation)
         {
             if (id != reservation.ReservationId)
             {

@@ -29,5 +29,8 @@ namespace BeanSceneReservationApp.Models
         Pending = 0,
         Cancelled = 1,
         Available = 2,
+        Closed = 3,
+        BookedOut = 4,
+        PrivateEvent = 5,
     }
 }

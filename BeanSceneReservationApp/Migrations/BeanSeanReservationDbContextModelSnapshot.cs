@@ -173,6 +173,7 @@ namespace BeanSceneReservationApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -182,6 +183,7 @@ namespace BeanSceneReservationApp.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Notes")
+                        .HasMaxLength(500)
                         .HasColumnType("text");
 
                     b.Property<int>("NumOfGuests")
@@ -194,16 +196,8 @@ namespace BeanSceneReservationApp.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("ReservationSource")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("ReservationStatus")
                         .HasMaxLength(50)
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SittingId")
                         .HasColumnType("int");
 
                     b.Property<int>("SittingTime")
