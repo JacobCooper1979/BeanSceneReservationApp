@@ -51,9 +51,13 @@
                         <!-- Members link (visible to Manager and Staff only) -->
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
                         {
-                            <li class="nav-item">
+                            @* <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
+                            </li> *@
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">User</a>
                             </li>
+                            
 
                         }
                     </ul>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BeanSceneReservationApp.Controllers
 {
@@ -30,9 +31,9 @@ namespace BeanSceneReservationApp.Controllers
             var allMembers = await _context.Members.ToListAsync();
 
             // Filter members based on user IDs
-            var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
+            //var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
 
-            return View(members);
+            return View(allMembers);
         }
 
 
@@ -69,6 +70,27 @@ namespace BeanSceneReservationApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var roleManager = _roleManager.GetRequiredService<RoleManager<IdentityRole>>();
+
+                //if (!await roleManager.RoleExistsAsync("member"))
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole(role));
+                //}
+
+                //var user = CreateUser();
+
+                //user.FirstName = Input.FirstName;
+                //user.LastName = Input.LastName;
+                //user.DateOfBirth = Input.DateOfBirth;
+                //user.Phone = Input.Phone;
+                //user.RegistrationDate = Input.RegistrationDate;
+
+                //await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                //var result = await _userManager.CreateAsync(user, Input.Password);
+
+
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

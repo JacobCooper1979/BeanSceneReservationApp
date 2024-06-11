@@ -13,12 +13,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using BeanSceneReservationApp.Models;
+using BeanSceneReservationApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Drawing.Text;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 {
@@ -26,24 +31,29 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly BeanSeanReservationDbContext _context;
+      
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
+            UserManager<ApplicationUser> userManager, RoleManager<ApplicationUser> roleManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger, IEmailSender emailSender,
+            BeanSeanReservationDbContext context
+            )
         {
             _userManager = userManager;
+            _roleManager= roleManager;  
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -122,9 +132,17 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
 
             if (ModelState.IsValid)
             {
+                //var roleManager = _roleManager.GetRequiredService<RoleManager<IdentityRole>>();
+
+                //if (!await roleManager.RoleExistsAsync("member"))
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole(role));
+                //}
+
                 var user = CreateUser();
 
                 user.FirstName = Input.FirstName;
@@ -136,9 +154,26 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
+                
+
+                var member = new Member();
+                member.FirstName = Input.FirstName;
+                member.LastName = Input.LastName;
+                member.Email = Input.Email;
+                member.Password = Input.Password;
+                member.Phone = Input.Phone;
+                member.RegistrationDate = Input.DateOfBirth;
+                var result1 = await _userManager.FindByEmailAsync(Input.Email);
+                member.UserId = result1.Id;
+
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
 
                 if (result.Succeeded)
                 {
+                    
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

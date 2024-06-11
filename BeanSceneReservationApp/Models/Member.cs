@@ -10,11 +10,11 @@ public class Member : IUserDetails
     public int Phone { get; set; }
     public string Password { get; set; }
     public DateTime RegistrationDate { get; set; }
-
-    // Add foreign key to ApplicationUser
+    [NotMapped]
+    public string Roll { get; set; }
     [ForeignKey("ApplicationUser")]
+    
     public string UserId { get; set; }
 
-    // Navigation property to ApplicationUser
     public ApplicationUser User { get; set; }
 }
