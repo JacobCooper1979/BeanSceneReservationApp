@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,11 +12,26 @@ namespace BeanSceneReservationApp.Controllers
     {
         private readonly BeanSeanReservationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
 
-        public MembersController(BeanSeanReservationDbContext context, UserManager<ApplicationUser> userManager)
+        public MembersController(BeanSeanReservationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IUserStore<ApplicationUser> userStore)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _userStore = userStore;
+            _emailStore = GetEmailStore();
+        }
+
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
 
         public async Task<IActionResult> Index()
@@ -30,11 +43,10 @@ namespace BeanSceneReservationApp.Controllers
             var allMembers = await _context.Members.ToListAsync();
 
             // Filter members based on user IDs
-            var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
+            //var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
 
-            return View(members);
+            return View(allMembers);
         }
-
 
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -44,8 +56,7 @@ namespace BeanSceneReservationApp.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.MemberId == id);
+            var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
             if (member == null)
             {
                 return NotFound();
@@ -61,20 +72,66 @@ namespace BeanSceneReservationApp.Controllers
         }
 
         // POST: Members/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate")] Member member)
         {
             if (ModelState.IsValid)
             {
+                if (!await _roleManager.RoleExistsAsync("Member"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Member"));
+                }
+
+                // Find the user by Id
+                var user = await _userManager.FindByIdAsync(member.UserId);
+
+                // Check if the user exists
+                if (user == null)
+                {
+                    // If the user doesn't exist, create a new ApplicationUser object
+                    user = new ApplicationUser
+                    {
+                        UserName = member.Email,
+                        Email = member.Email,
+                        FirstName = member.FirstName,
+                        LastName = member.LastName,
+                        PhoneNumber = member.Phone, 
+                        RegistrationDate = DateTime.Now
+                    };
+
+                    // Create the user
+                    var createUserResult = await _userManager.CreateAsync(user, member.Password);
+
+                    // Check if the user creation was successful
+                    if (!createUserResult.Succeeded)
+                    {
+                        foreach (var error in createUserResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(member); // Return the view with errors
+                    }
+                }
+
+                // Add the user to the "Member" role
+                await _userManager.AddToRoleAsync(user, "Member");
+
+                // Assign the user Id to the member's UserId property
+                member.UserId = user.Id;
+
+                // Add the member to the context and save changes
                 _context.Add(member);
                 await _context.SaveChangesAsync();
+
+                // Redirect to the Index action of the controller
                 return RedirectToAction(nameof(Index));
             }
+
+            // If ModelState is not valid, return the view with validation errors
             return View(member);
         }
+
 
         // GET: Members/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -84,6 +141,7 @@ namespace BeanSceneReservationApp.Controllers
                 return NotFound();
             }
 
+
             var member = await _context.Members.FindAsync(id);
             if (member == null)
             {
@@ -92,12 +150,9 @@ namespace BeanSceneReservationApp.Controllers
             return View(member);
         }
 
-        // POST: Members/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate")] Member member)
+        public async Task<IActionResult> Edit(int id, [Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate,Role")] Member member)
         {
             if (id != member.MemberId)
             {
@@ -108,6 +163,46 @@ namespace BeanSceneReservationApp.Controllers
             {
                 try
                 {
+                    // Find the user by Id
+                    var user = await _userManager.FindByIdAsync(member.UserId);
+                    if (user != null)
+                    {
+                        user.FirstName = member.FirstName;
+                        user.LastName = member.LastName;
+                        user.Email = member.Email;
+                        user.UserName = member.Email;
+                        user.PhoneNumber = member.Phone.ToString();
+
+                        // Update the user's role
+                        await _userManager.RemoveFromRoleAsync(user, "Member"); 
+                        await _userManager.AddToRoleAsync(user, member.Role); 
+
+                        var updateResult = await _userManager.UpdateAsync(user);
+                        if (!updateResult.Succeeded)
+                        {
+                            foreach (var error in updateResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(member);
+                        }
+
+                        if (!string.IsNullOrEmpty(member.Password))
+                        {
+                            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                            var passwordResult = await _userManager.ResetPasswordAsync(user, token, member.Password);
+                            if (!passwordResult.Succeeded)
+                            {
+                                foreach (var error in passwordResult.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                                return View(member);
+                            }
+                        }
+                    }
+
+                    // Update the member in the database
                     _context.Update(member);
                     await _context.SaveChangesAsync();
                 }
@@ -127,6 +222,7 @@ namespace BeanSceneReservationApp.Controllers
             return View(member);
         }
 
+
         // GET: Members/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -135,8 +231,7 @@ namespace BeanSceneReservationApp.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.MemberId == id);
+            var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
             if (member == null)
             {
                 return NotFound();

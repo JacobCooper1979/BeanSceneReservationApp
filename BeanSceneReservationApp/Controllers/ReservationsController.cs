@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
+using System.Security.Claims;
 
 namespace BeanSceneReservationApp.Controllers
 {
@@ -71,13 +72,13 @@ namespace BeanSceneReservationApp.Controllers
                 // Check if the selected table is in the same area as the customer's selected area
                 if (table.AreaName != reservation.AreaName)
                 {
-                    ModelState.AddModelError("TableId", "The selected table is not in the same area as the customers selected area.");
+                    ModelState.AddModelError("TableId", "The selected table is not in the same area as the customer's selected area.");
                     ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
                     return View(reservation);
                 }
 
                 // Check if the table is already booked out
-                if (table.TableStatus == TableStatus.BookedOut)
+                if (table.TableStatus == TableStatus.Reserved)
                 {
                     ModelState.AddModelError("TableId", "The selected table is already booked out.");
                     ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
@@ -91,15 +92,16 @@ namespace BeanSceneReservationApp.Controllers
                 await _context.SaveChangesAsync();
 
                 // Update the table status to Reserved
-                table.TableStatus = TableStatus.BookedOut;
+                table.TableStatus = TableStatus.Reserved;
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                // Set a success message in ViewBag
+                ViewBag.SuccessMessage = "Reservation created successfully!";
             }
+
             ViewData["TableId"] = new SelectList(_context.RestaurantTables, "TableId", "TableName", reservation.TableId);
             return View(reservation);
         }
-
 
         // GET: Reservations/Edit/5
         public async Task<IActionResult> Edit(int? id)

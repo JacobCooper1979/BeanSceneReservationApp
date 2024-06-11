@@ -36,14 +36,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="RegistrationDate" class="control-label"></label>
-                <input asp-for="RegistrationDate" class="form-control" />
-                <span asp-validation-for="RegistrationDate" class="text-danger"></span>
-            </div>
+            <select asp-for="Role" class="form-control">
+                <option value="Member" selected="@(Model.Role == "Member" ? "selected" : null)">Member</option>
+                <option value="Staff" selected="@(Model.Role == "Staff" ? "selected" : null)">Staff</option>
+                <option value="Manager" selected="@(Model.Role == "Manager" ? "selected" : null)">Manager</option>
+            </select>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -56,5 +56,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

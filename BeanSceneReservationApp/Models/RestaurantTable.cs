@@ -32,5 +32,7 @@ namespace BeanSceneReservationApp.Models
         Closed = 3,
         BookedOut = 4,
         PrivateEvent = 5,
+        Reserved = 6,
     }
+
 }

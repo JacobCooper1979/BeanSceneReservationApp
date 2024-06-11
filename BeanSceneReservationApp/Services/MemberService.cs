@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeanSceneReservationApp.Services
 {
-    public class MemberService : IMemberService
+    public class MemberService 
     {
         private readonly BeanSeanReservationDbContext _context;
 
@@ -25,11 +25,20 @@ namespace BeanSceneReservationApp.Services
             return await _context.Members.ToListAsync();
         }
 
-        public async Task<Member> CreateMemberAsync(Member member)
+        public async Task<bool> CreateMemberAsync(Member member)
         {
-            _context.Members.Add(member);
-            await _context.SaveChangesAsync();
-            return member;
+            try
+            {
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
+               
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+           
         }
 
         public async Task<Member> UpdateMemberAsync(Member member)

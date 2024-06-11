@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BeanSeanReservationDbContext>(options =>
@@ -21,7 +21,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<BeanSeanReservationDbContext>();
 
 builder.Services.AddScoped<IAreaServices, AreaServices>();
-builder.Services.AddScoped<IMemberService, MemberService>();
+/*builder.Services.AddScoped<IMemberService, MemberService>();*/
 
 // Email sender configuration
 builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
