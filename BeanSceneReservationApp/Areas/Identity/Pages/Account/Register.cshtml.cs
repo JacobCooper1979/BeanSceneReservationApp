@@ -13,12 +13,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using BeanSceneReservationApp.Models;
+using BeanSceneReservationApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Drawing.Text;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 {
@@ -26,24 +31,29 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly BeanSeanReservationDbContext _context;
+      
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
+            UserManager<ApplicationUser> userManager, RoleManager<ApplicationUser> roleManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger, IEmailSender emailSender,
+            BeanSeanReservationDbContext context
+            )
         {
             _userManager = userManager;
+            _roleManager= roleManager;  
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -71,51 +81,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /*[Required]
-            [EmailAddress]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Date of birth")]
-            public string DateOfBirth { get; set; }
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }*/
-
-
-
-            //---------------------------------------------------------
             [Required]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
@@ -135,6 +100,10 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [Display(Name = "Phone Number")]
+            public int Phone { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -144,6 +113,12 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm Password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Registration Date")]
+            [DataType(DataType.Date)]
+            public DateTime RegistrationDate { get; set; } = DateTime.Now;
+
         }
 
 
@@ -157,21 +132,48 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
 
             if (ModelState.IsValid)
             {
+                //var roleManager = _roleManager.GetRequiredService<RoleManager<IdentityRole>>();
+
+                //if (!await roleManager.RoleExistsAsync("member"))
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole(role));
+                //}
+
                 var user = CreateUser();
 
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
+                user.Phone = Input.Phone;
+                user.RegistrationDate = Input.RegistrationDate;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
+                
+
+                var member = new Member();
+                member.FirstName = Input.FirstName;
+                member.LastName = Input.LastName;
+                member.Email = Input.Email;
+                member.Password = Input.Password;
+                member.Phone = Input.Phone;
+                member.RegistrationDate = Input.DateOfBirth;
+                var result1 = await _userManager.FindByEmailAsync(Input.Email);
+                member.UserId = result1.Id;
+
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
 
                 if (result.Succeeded)
                 {
+                    
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -183,7 +185,8 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _userManager.AddToRoleAsync(user, "Member"); // Assigning "Member" role by default
+                    // Assigning Member role to new users by default
+                    await _userManager.AddToRoleAsync(user, "Member"); 
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

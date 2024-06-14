@@ -6,23 +6,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BeanSceneReservationApp.Controllers
 {
     public class MembersController : Controller
     {
         private readonly BeanSeanReservationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MembersController(BeanSeanReservationDbContext context)
+        public MembersController(BeanSeanReservationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Members
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Members.ToListAsync());
+            // Get the user IDs of users in the "Member" role
+            var memberUserIds = (await _userManager.GetUsersInRoleAsync("Member")).Select(u => u.Id).ToList();
+
+            // Get all members from the database
+            var allMembers = await _context.Members.ToListAsync();
+
+            // Filter members based on user IDs
+            //var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
+
+            return View(allMembers);
         }
+
 
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -57,6 +70,27 @@ namespace BeanSceneReservationApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var roleManager = _roleManager.GetRequiredService<RoleManager<IdentityRole>>();
+
+                //if (!await roleManager.RoleExistsAsync("member"))
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole(role));
+                //}
+
+                //var user = CreateUser();
+
+                //user.FirstName = Input.FirstName;
+                //user.LastName = Input.LastName;
+                //user.DateOfBirth = Input.DateOfBirth;
+                //user.Phone = Input.Phone;
+                //user.RegistrationDate = Input.RegistrationDate;
+
+                //await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                //var result = await _userManager.CreateAsync(user, Input.Password);
+
+
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
