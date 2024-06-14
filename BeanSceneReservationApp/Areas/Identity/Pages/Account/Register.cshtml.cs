@@ -82,7 +82,7 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Phone Number")]
-            public string Phone { get; set; }
+            public string PhoneNumber { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -180,8 +180,9 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
-                user.Phone = Input.Phone;
+                user.PhoneNumber = Input.PhoneNumber;
                 user.RegistrationDate = Input.RegistrationDate;
+
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -195,11 +196,12 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                         LastName = Input.LastName,
                         Email = Input.Email,
                         Password = Input.Password,
-                        Phone = Input.Phone,
+                        PhoneNumber = Input.PhoneNumber,
                         RegistrationDate = Input.DateOfBirth,
                         UserId = user.Id
                     };
 
+                    member.Role = "Member";
                     _context.Members.Add(member);
                     await _context.SaveChangesAsync();
 
