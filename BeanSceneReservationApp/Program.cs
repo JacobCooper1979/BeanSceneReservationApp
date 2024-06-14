@@ -45,6 +45,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
@@ -69,7 +70,7 @@ using (var scope = app.Services.CreateScope())
             {
                 await roleManager.CreateAsync(new IdentityRole(role));
             }
-        }
+      }
 
         // Seeding manager user
         await SeedUser(userManager, "Manager@gmail.com", "Password1234!", "John", "Doe", new DateTime(1990, 1, 1), "Manager");
@@ -79,7 +80,7 @@ using (var scope = app.Services.CreateScope())
 
         // Seeding member user
         await SeedUser(userManager, "Member@gmail.com", "Password1234!", "Craig", "Keys", new DateTime(1990, 1, 1), "Member");
-    }
+        }
     catch (Exception ex)
     {
         logger.LogError(ex, "An error occurred during initialization.");

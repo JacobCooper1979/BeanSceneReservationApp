@@ -33,7 +33,7 @@ namespace BeanSceneReservationApp.Models
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.Phone).HasMaxLength(20);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             });
 
             modelBuilder.Entity<Reservation>(entity =>

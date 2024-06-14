@@ -1,6 +1,6 @@
-﻿namespace BeanSceneReservationApp.Models
+﻿namespace BeanSceneReservationApp.Services
 {
-    public interface IUserDetails
+   public interface IUserDetails
     {
         string FirstName { get; set; }
         string LastName { get; set; }

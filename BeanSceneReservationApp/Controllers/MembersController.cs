@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneReservationApp.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection.Metadata;
 
 namespace BeanSceneReservationApp.Controllers
 {
@@ -37,11 +38,11 @@ namespace BeanSceneReservationApp.Controllers
         public async Task<IActionResult> Index()
         {
             // Get the user IDs of users in the "Member" role
-            var memberUserIds = (await _userManager.GetUsersInRoleAsync("Member")).Select(u => u.Id).ToList();
-
+         //   var memberUserIds = (await _userManager.GetUsersInRoleAsync("Member")).Select(u => u.Id).ToList();
+           // var
             // Get all members from the database
             var allMembers = await _context.Members.ToListAsync();
-
+           // allMembers.
             // Filter members based on user IDs
             //var members = allMembers.Where(m => memberUserIds.Contains(m.UserId)).ToList();
 
@@ -74,17 +75,16 @@ namespace BeanSceneReservationApp.Controllers
         // POST: Members/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate")] Member member)
+        public async Task<IActionResult> Create([Bind("MemberId,FirstName,LastName,Email,PhoneNumber,Role,Password,RegistrationDate")] Member member)
         {
-            if (ModelState.IsValid)
-            {
-                if (!await _roleManager.RoleExistsAsync("Member"))
+           
+                if (!await _roleManager.RoleExistsAsync(member.Role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole("Member"));
+                    await _roleManager.CreateAsync(new IdentityRole(member.Role));
                 }
 
                 // Find the user by Id
-                var user = await _userManager.FindByIdAsync(member.UserId);
+               var user = await _userManager.FindByEmailAsync(member.Email);
 
                 // Check if the user exists
                 if (user == null)
@@ -96,12 +96,12 @@ namespace BeanSceneReservationApp.Controllers
                         Email = member.Email,
                         FirstName = member.FirstName,
                         LastName = member.LastName,
-                        PhoneNumber = member.Phone, 
-                        RegistrationDate = DateTime.Now
+                        PhoneNumber = member.PhoneNumber, 
+                        RegistrationDate = DateTime.Now,
                     };
 
-                    // Create the user
-                    var createUserResult = await _userManager.CreateAsync(user, member.Password);
+                // Create the user
+                var createUserResult = await _userManager.CreateAsync(user, member.Password);
 
                     // Check if the user creation was successful
                     if (!createUserResult.Succeeded)
@@ -112,10 +112,11 @@ namespace BeanSceneReservationApp.Controllers
                         }
                         return View(member); // Return the view with errors
                     }
-                }
+                await _userManager.AddToRoleAsync(user, member.Role);
+           
 
                 // Add the user to the "Member" role
-                await _userManager.AddToRoleAsync(user, "Member");
+               
 
                 // Assign the user Id to the member's UserId property
                 member.UserId = user.Id;
@@ -129,6 +130,7 @@ namespace BeanSceneReservationApp.Controllers
             }
 
             // If ModelState is not valid, return the view with validation errors
+            TempData["Error"] = "User already exist";
             return View(member);
         }
 
@@ -143,6 +145,7 @@ namespace BeanSceneReservationApp.Controllers
 
 
             var member = await _context.Members.FindAsync(id);
+            var x = member.Password;
             if (member == null)
             {
                 return NotFound();
@@ -150,7 +153,7 @@ namespace BeanSceneReservationApp.Controllers
             return View(member);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate,Role")] Member member)
         {
@@ -220,7 +223,166 @@ namespace BeanSceneReservationApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
+        }*/
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("MemberId,FirstName,LastName,Email,Phone,Password,RegistrationDate,Role")] Member member)
+        {
+            *//*if (id != member.MemberId)
+            {
+                return NotFound();
+            }*/
+
+        /*if (ModelState.IsValid)*/
+        /* {*//*
+
+             try
+             {
+
+                 var user = await _userManager.FindByEmailAsync(member.Email);
+                 if (user != null)
+                 {
+                     user.FirstName = member.FirstName;
+                     user.LastName = member.LastName;
+                     user.Email = member.Email;
+                     //user.UserName = member.Email;
+                     user.PhoneNumber = member.Phone.ToString();
+
+
+
+                     // Update the user's role
+                     var currentRole = await _userManager.GetRolesAsync(user);
+                     await _userManager.RemoveFromRolesAsync(user, currentRole); 
+                     await _userManager.AddToRoleAsync(user, member.Role); 
+
+                     var updateResult = await _userManager.UpdateAsync(user); 
+                 member.UserId = user.Id;
+                 if (!updateResult.Succeeded)
+                     {
+
+                         foreach (var error in updateResult.Errors)
+                         {
+                             ModelState.AddModelError(string.Empty, error.Description);
+                         }
+                         return View(member);
+                     }
+
+                     if (!string.IsNullOrEmpty(member.Password))
+                     {
+                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                         var passwordResult = await _userManager.ResetPasswordAsync(user, token, member.Password);
+                         if (!passwordResult.Succeeded)
+                         {
+                             foreach (var error in passwordResult.Errors)
+                             {
+                                 ModelState.AddModelError(string.Empty, error.Description);
+                             }
+                             return View(member);
+                         }
+                     }
+                 }
+
+             // Update the member in the database
+
+                 _context.Update(member);
+                 await _context.SaveChangesAsync();
+
+                 return RedirectToAction(nameof(Index));
+             }
+             catch (DbUpdateConcurrencyException)
+             {
+                 if (!MemberExists(member.MemberId))
+                 {
+                     return NotFound();
+                 }
+                 else
+                 {
+                     throw;
+                 }
+             }
+        *//* }*//*
+         return View(member);
+     }
+
+
+*/
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("MemberId,FirstName,LastName,Email,PhoneNumber,Password,RegistrationDate,Role,UserId")] Member member)
+        {
+            //if (id != member.MemberId)
+            //{
+            //    return NotFound();
+            //}
+
+            //if (ModelState.IsValid)
+            //{
+                try
+                {
+                    var user = await _userManager.FindByEmailAsync(member.Email);
+                    if (user != null)
+                    {
+                        user.FirstName = member.FirstName;
+                        user.LastName = member.LastName;
+                        user.Email = member.Email;
+                        user.UserName = member.Email;
+                        user.PhoneNumber = member.PhoneNumber.ToString();
+
+                        // Update the user's role
+                        var currentRole = await _userManager.GetRolesAsync(user);
+                        await _userManager.RemoveFromRolesAsync(user, currentRole); // Remove all current roles
+                        await _userManager.AddToRoleAsync(user, member.Role); // Add the new role
+
+                        var updateResult = await _userManager.UpdateAsync(user);
+                        if (!updateResult.Succeeded)
+                        {
+                            foreach (var error in updateResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(member);
+                        }
+
+                        if (!string.IsNullOrEmpty(member.Password))
+                        {
+                            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                            var passwordResult = await _userManager.ResetPasswordAsync(user, token, member.Password);
+                            if (!passwordResult.Succeeded)
+                            {
+                                foreach (var error in passwordResult.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                                return View(member);
+                            }
+                        }
+                    }
+
+                // Update the member in the database
+                var user1 = await _userManager.FindByEmailAsync(member.Email);
+                member.UserId = user1.Id;
+                _context.Update(member);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MemberExists(member.MemberId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+           // }
+            return View(member);
         }
+
 
 
         // GET: Members/Delete/5
