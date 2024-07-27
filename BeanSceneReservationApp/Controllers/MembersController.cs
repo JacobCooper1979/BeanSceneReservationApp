@@ -7,7 +7,6 @@ using BeanSceneReservationApp.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection.Metadata;
 
-
 namespace BeanSceneReservationApp.Controllers
 {
     public class MembersController : Controller
