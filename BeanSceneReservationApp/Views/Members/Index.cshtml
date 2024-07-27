@@ -63,15 +63,10 @@
                     @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
-                    @if (User.IsInRole("Manager"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
-                    }
-                    @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
-                    {
-                        <a asp-action="Details" asp-route-id="@item.MemberId">Details</a>
-                    }
+                    <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MemberId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
+
                 </td>
             </tr>
         }

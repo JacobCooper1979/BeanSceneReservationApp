@@ -10,13 +10,8 @@ public class Member
     public string PhoneNumber { get; set; } 
     public string Password { get; set; }
     public DateTime RegistrationDate { get; set; }
-
-
-
     [ForeignKey("ApplicationUser")]
-    
     public string UserId { get; set; }
-
 
     public string Role { get; set; }
 

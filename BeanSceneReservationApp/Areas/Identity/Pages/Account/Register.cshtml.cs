@@ -116,16 +116,9 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
 
             if (ModelState.IsValid)
             {
-                //var roleManager = _roleManager.GetRequiredService<RoleManager<IdentityRole>>();
-
-                //if (!await roleManager.RoleExistsAsync("member"))
-                //{
-                //    await roleManager.CreateAsync(new IdentityRole(role));
-                //}
 
                 var user = CreateUser();
 
@@ -221,7 +214,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-
                     var member = new Member
                     {
                         FirstName = Input.FirstName,
@@ -236,7 +228,6 @@ namespace BeanSceneReservationApp.Areas.Identity.Pages.Account
                     member.Role = "Member";
                     _context.Members.Add(member);
                     await _context.SaveChangesAsync();
-
 
                     _logger.LogInformation("User created a new account with password.");
 
