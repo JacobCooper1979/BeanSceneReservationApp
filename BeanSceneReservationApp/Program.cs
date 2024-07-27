@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BeanSeanReservationDbContext>(options =>
@@ -21,7 +21,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<BeanSeanReservationDbContext>();
 
 builder.Services.AddScoped<IAreaServices, AreaServices>();
-builder.Services.AddScoped<IMemberService, MemberService>();
+/*builder.Services.AddScoped<IMemberService, MemberService>();*/
 
 // Email sender configuration
 builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
@@ -69,7 +69,7 @@ using (var scope = app.Services.CreateScope())
             {
                 await roleManager.CreateAsync(new IdentityRole(role));
             }
-        }
+      }
 
         // Seeding manager user
         await SeedUser(userManager, "Manager@gmail.com", "Password1234!", "John", "Doe", new DateTime(1990, 1, 1), "Manager");
@@ -79,7 +79,7 @@ using (var scope = app.Services.CreateScope())
 
         // Seeding member user
         await SeedUser(userManager, "Member@gmail.com", "Password1234!", "Craig", "Keys", new DateTime(1990, 1, 1), "Member");
-    }
+        }
     catch (Exception ex)
     {
         logger.LogError(ex, "An error occurred during initialization.");

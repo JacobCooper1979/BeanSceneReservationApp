@@ -20,6 +20,9 @@
                 @Html.DisplayNameFor(model => model.TableStatus)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.AreaName)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Area)
             </th>
             <th></th>
@@ -33,6 +36,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TableStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AreaName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Area.AreaId)
