@@ -7,16 +7,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BeanSceneReservationApp.styles.css" asp-append-version="true" />
-
     <link rel="stylesheet" href="~/css/mycsstheme.css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a class="navbar-brand" href="#">Bean Scene</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
@@ -26,45 +25,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Create">Book a Reservation</a>
                         </li>
-                        <!-- Area link (visible to Manager and Staff only) -->
                         @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Manage Reservation</a>
                             </li>
-                        }
-
-                        <!-- Area link (visible to Manager and Staff only) -->
-                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Areas" asp-action="Index">Areas</a>
                             </li>
-                        }
-                        <!-- Restaurant Tables link (visible to Manager and Staff only) -->
-                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RestaurantTables" asp-action="Index">Restaurant Tables</a>
                             </li>
-                        }
-                        <!-- Members link (visible to Manager and Staff only) -->
-                        @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
-                        {
-                            @* <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
-                            </li> *@
+
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">User</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Manage Users</a>
                             </li>
-                            
 
                         }
                     </ul>
-
-
                     <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search" spellcheck="false" data-ms-editor="true">
+                        <input class="form-control me-sm-2" type="search" placeholder="Search" spellcheck="false">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -77,14 +57,16 @@
             @RenderBody()
         </main>
     </div>
-
+    <br />
+    <br />
+    <br />
+    <br />
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - BeanSceneReservationApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
