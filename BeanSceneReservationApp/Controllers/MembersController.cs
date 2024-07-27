@@ -7,6 +7,7 @@ using BeanSceneReservationApp.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection.Metadata;
 
+
 namespace BeanSceneReservationApp.Controllers
 {
     public class MembersController : Controller
@@ -122,6 +123,7 @@ namespace BeanSceneReservationApp.Controllers
                 member.UserId = user.Id;
 
                 // Add the member to the context and save changes
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
 
