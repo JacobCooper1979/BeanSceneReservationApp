@@ -8,6 +8,7 @@ namespace BeanSceneReservationApp.Services
 {
     public class MemberService 
     {
+
     //    private readonly BeanSeanReservationDbContext _context;
 
     //    public MemberService(BeanSeanReservationDbContext context)
@@ -24,6 +25,7 @@ namespace BeanSceneReservationApp.Services
     //    {
     //        return await _context.Members.ToListAsync();
     //    }
+
 
     //    public async Task<bool> CreateMemberAsync(Member member)
     //    {
@@ -60,5 +62,6 @@ namespace BeanSceneReservationApp.Services
     //        await _context.SaveChangesAsync();
     //        return true;
     //    }
+
     }
 }
