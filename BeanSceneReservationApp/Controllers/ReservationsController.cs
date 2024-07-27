@@ -69,7 +69,7 @@ namespace BeanSceneReservationApp.Controllers
                     return NotFound(); // Table not found
                 }
 
-                // Check if the selected table is in the same area as the customer's selected area
+                // Check if the selected table is in the same area as the customers selected area
                 if (table.AreaName != reservation.AreaName)
                 {
                     ModelState.AddModelError("TableId", "The selected table is not in the same area as the customer's selected area.");

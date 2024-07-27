@@ -122,6 +122,7 @@ namespace BeanSceneReservationApp.Controllers
                 member.UserId = user.Id;
 
                 // Add the member to the context and save changes
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
 

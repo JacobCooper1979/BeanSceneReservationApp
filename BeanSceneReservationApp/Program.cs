@@ -21,7 +21,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<BeanSeanReservationDbContext>();
 
 builder.Services.AddScoped<IAreaServices, AreaServices>();
+
 /*builder.Services.AddScoped<IMemberService, MemberService>();*/
+
 
 // Email sender configuration
 builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
